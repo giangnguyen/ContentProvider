@@ -13,6 +13,12 @@ import android.net.Uri;
 import com.thechange.libs.dbtable.AbsDBTable;
 import com.thechange.libs.dbtable.UriMatched;
 
+/**
+ * Abstract class that extended from {@link ContentProvider}.
+ * 
+ * @author giangnguyen
+ * 
+ */
 public abstract class AbsContentProvider extends ContentProvider {
     
     private BaseSqliteOpenHelper mSqliteOpenHelper;

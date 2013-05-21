@@ -7,6 +7,12 @@ import android.content.ContentUris;
 import android.content.UriMatcher;
 import android.net.Uri;
 
+/**
+ * Abstract class that present for database table
+ * 
+ * @author giangnguyen
+ * 
+ */
 public abstract class AbsDBTable {
     
     public static final String _ID           = "_id";

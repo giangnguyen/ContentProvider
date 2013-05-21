@@ -7,6 +7,11 @@ import android.util.Log;
 
 import com.thechange.libs.dbtable.AbsDBTable;
 
+/**
+ * An derived class of {@link SQLiteOpenHelper} class.
+ * @author giangnguyen
+ *
+ */
 public class BaseSqliteOpenHelper extends SQLiteOpenHelper {
     
     private static final String     TAG = BaseSqliteOpenHelper.class.getName();
