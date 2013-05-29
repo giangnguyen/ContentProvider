@@ -1,5 +1,6 @@
 package com.thechange.libs.dbtable;
 
+import android.database.sqlite.SQLiteDatabase;
 import android.text.TextUtils;
 
 /**
@@ -17,7 +18,7 @@ public class DBColumn {
 	 * @param name
 	 *            column's name
 	 * @param type
-	 *            database's type
+	 *            the {@link DataType} supported by {@link SQLiteDatabase}
 	 * @param extraInfor
 	 *            the extra information for the column. e.g.
 	 *            <code>PRIMARY KEY AUTOINCREMENT...</code>

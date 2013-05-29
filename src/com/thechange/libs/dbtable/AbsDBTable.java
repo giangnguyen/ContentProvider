@@ -2,6 +2,8 @@ package com.thechange.libs.dbtable;
 
 import java.util.List;
 
+import com.thechange.libs.contentprovider.AbsContentProvider;
+
 import android.content.ContentProvider;
 import android.content.ContentUris;
 import android.content.UriMatcher;
@@ -21,7 +23,9 @@ public abstract class AbsDBTable {
     
     private static final int   MULTIPLE_ITEM = 2;
     
-    private final UriMatcher   sUriMatcher;
+    private final UriMatcher   mUriMatcher;
+    
+    private String             mAuthority;
     
     /**
      * Constructor of {@link AbsDBTable}
@@ -30,10 +34,11 @@ public abstract class AbsDBTable {
      *            the <b>authority</b> of {@link ContentProvider}
      */
     public AbsDBTable(String authority) {
+        mAuthority = authority;
         final String tableName = getTableName();
-        sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
-        sUriMatcher.addURI(authority, tableName, MULTIPLE_ITEM);
-        sUriMatcher.addURI(authority, tableName + "/#", SINGLE_ITEM);
+        mUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
+        mUriMatcher.addURI(mAuthority, tableName, MULTIPLE_ITEM);
+        mUriMatcher.addURI(mAuthority, tableName + "/#", SINGLE_ITEM);
     }
     
     /**
@@ -57,6 +62,11 @@ public abstract class AbsDBTable {
         return builder.toString();
     }
     
+    public Uri getContentUri() {
+        return Uri.parse(AbsContentProvider.SCHEME + mAuthority + "/"
+                + getTableName());
+    }
+    
     /**
      * Check if the {@link Uri} match to this table define.
      * 
@@ -66,7 +76,7 @@ public abstract class AbsDBTable {
      */
     public UriMatched checkMatched(Uri uri) {
         final String tableName = getTableName();
-        switch (sUriMatcher.match(uri)) {
+        switch (mUriMatcher.match(uri)) {
         case SINGLE_ITEM:
             final long id = ContentUris.parseId(uri);
             return new UriMatched(id, tableName);
