@@ -47,6 +47,33 @@ public abstract class AbsContentProvider extends ContentProvider {
 	protected abstract AbsDBTable[] getTables();
 
 	@Override
+	public int bulkInsert(Uri uri, ContentValues[] values) {
+		final UriMatched uriMatched = scanUri(uri);
+		// Validates the incoming URI. Only the full provider URI is allowed for
+		// inserts.
+		if (uriMatched == null || uriMatched.getId() != UriMatched.UNKNOW_ID) {
+			throw new IllegalArgumentException("Unknown URI " + uri);
+		}
+
+		// Opens the database object in "write" mode.
+		SQLiteDatabase db = mSqliteOpenHelper.getWritableDatabase();
+		db.beginTransaction();
+		try {
+			for (ContentValues cv : values) {
+				long newID = db.insertOrThrow(uriMatched.getTableName(), null, cv);
+				if (newID <= 0) {
+					throw new SQLException("Failed to insert row into " + uri);
+				}
+			}
+			db.setTransactionSuccessful();
+			getContext().getContentResolver().notifyChange(uri, null);
+			return values.length;
+		} finally {
+			db.endTransaction();
+		}
+	}
+	
+	@Override
 	public int delete(Uri uri, String where, String[] whereArgs) {
 		final UriMatched uriMatched = scanUri(uri);
 		int count;
@@ -100,33 +127,6 @@ public abstract class AbsContentProvider extends ContentProvider {
 		// If the insert didn't succeed, then the rowID is <= 0. Throws an
 		// exception.
 		throw new SQLException("Failed to insert row into " + uri);
-	}
-
-	@Override
-	public int bulkInsert(Uri uri, ContentValues[] values) {
-		final UriMatched uriMatched = scanUri(uri);
-		// Validates the incoming URI. Only the full provider URI is allowed for
-		// inserts.
-		if (uriMatched == null || uriMatched.getId() != UriMatched.UNKNOW_ID) {
-			throw new IllegalArgumentException("Unknown URI " + uri);
-		}
-
-		// Opens the database object in "write" mode.
-		SQLiteDatabase db = mSqliteOpenHelper.getWritableDatabase();
-		db.beginTransaction();
-		try {
-			for (ContentValues cv : values) {
-				long newID = db.insertOrThrow(uriMatched.getTableName(), null, cv);
-				if (newID <= 0) {
-					throw new SQLException("Failed to insert row into " + uri);
-				}
-			}
-			db.setTransactionSuccessful();
-			getContext().getContentResolver().notifyChange(uri, null);
-			return values.length;
-		} finally {
-			db.endTransaction();
-		}
 	}
 
 	@Override
