@@ -12,5 +12,6 @@ public enum DataType
     TEXT,
     NUMERIC,
     INTEGER,
-    REAL
+    REAL,
+    BOOL
 }
