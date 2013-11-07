@@ -1,8 +1,8 @@
 package com.thechange.libs.contentprovider;
 
+import net.sqlcipher.database.SQLiteDatabase;
+import net.sqlcipher.database.SQLiteOpenHelper;
 import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 import com.thechange.libs.dbtable.AbsDBTable;
@@ -16,6 +16,8 @@ import com.thechange.libs.dbtable.AbsDBTable;
 public class BaseSqliteOpenHelper extends SQLiteOpenHelper {
 
 	private static final String TAG = BaseSqliteOpenHelper.class.getName();
+	private static final String SECRET = "ExamplePassword"; // TODO: Replace
+															// your secret key
 
 	private final AbsDBTable[] tables;
 
@@ -43,5 +45,13 @@ public class BaseSqliteOpenHelper extends SQLiteOpenHelper {
 		}
 		// Recreates the database with a new version
 		onCreate(db);
+	}
+
+	public synchronized SQLiteDatabase getReadableDatabase() {
+		return getReadableDatabase(SECRET);
+	}
+
+	public synchronized SQLiteDatabase getWritableDatabase() {
+		return getWritableDatabase(SECRET);
 	}
 }
